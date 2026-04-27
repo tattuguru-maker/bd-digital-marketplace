@@ -340,7 +340,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <div className="mt-5 rounded-lg border border-iris-400/30 bg-iris-500/10 p-3 text-[12px] text-iris-100">
               <div className="font-semibold">Onboarding offer</div>
               <p className="mt-1 text-iris-200/80">
-                Sellers pay <strong>0% transaction fees</strong> right now — savings passed on to you.
+                Sellers pay <strong>0% platform fees</strong> right now — savings passed on to you.
               </p>
             </div>
 

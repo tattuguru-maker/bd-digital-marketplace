@@ -18,7 +18,7 @@ export default function SellPage() {
         <div className="container-page py-14 md:py-20">
           <div className="grid items-center gap-10 lg:grid-cols-12">
             <div className="lg:col-span-7">
-              <Badge variant="gold">For sellers · 0% transaction fees</Badge>
+              <Badge variant="gold">For sellers · 0% platform fees</Badge>
               <h1 className="mt-4 font-display text-4xl font-extrabold leading-[1.05] tracking-tight md:text-6xl">
                 Move your Facebook customers
                 <br />
@@ -28,7 +28,7 @@ export default function SellPage() {
                 Stop juggling Messenger DMs, screenshots and bKash personal numbers.
                 Open a verified Digibazar storefront — automated delivery, escrow payments,
                 ratings, replacements and a built-in customer base.
-                <strong className="text-fg"> 0% transaction fees during onboarding.</strong>
+                <strong className="text-fg"> 0% platform fees during onboarding.</strong>
               </p>
 
               <div className="mt-7 flex flex-wrap items-center gap-3">
@@ -41,7 +41,7 @@ export default function SellPage() {
               </div>
 
               <div id="fees" className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
-                <Stat v="0%" l="transaction fees" />
+                <Stat v="0%" l="platform fees" />
                 <Stat v="62K+" l="monthly buyers" />
                 <Stat v="<5m" l="avg. delivery" />
                 <Stat v="৳" l="BDT payouts" />
@@ -90,8 +90,8 @@ export default function SellPage() {
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           <Benefit
             icon={<Sparkles size={18} />}
-            title="0% transaction fees"
-            text="Keep 100% of your sale price during onboarding. No payment fees, no listing fees. We earn when you grow."
+            title="0% platform fees"
+            text="Keep 100% of your sale price during onboarding — no listing fees, no commission. (Standard processor fees from bKash / cards still apply.)"
           />
           <Benefit
             icon={<Wallet size={18} />}
@@ -176,7 +176,7 @@ export default function SellPage() {
               Bringing customers from your Facebook page? Mention it; we&apos;ll prioritize you.
             </p>
             <div className="mt-5 space-y-3 text-sm text-fg-muted">
-              <Bullet text="0% transaction fees during onboarding" />
+              <Bullet text="0% platform fees during onboarding" />
               <Bullet text="Free migration help from your Facebook page" />
               <Bullet text="Personal onboarding manager" />
               <Bullet text="Daily auto-payouts via bKash / bank" />
