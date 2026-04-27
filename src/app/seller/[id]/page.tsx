@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { ProductCard } from "@/components/marketplace/product-card";
 import { RatingStars } from "@/components/marketplace/rating-stars";
-import { Breadcrumb } from "@/app/browse/page";
+import { Breadcrumb } from "@/components/marketplace/breadcrumb";
 import { getSeller, productsBySeller, sellers } from "@/lib/data";
 import { formatNumber, timeAgo } from "@/lib/utils";
 

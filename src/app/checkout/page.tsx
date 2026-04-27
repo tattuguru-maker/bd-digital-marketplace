@@ -3,7 +3,7 @@ import { ShieldCheck, Lock, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { ProductArt } from "@/components/marketplace/product-art";
-import { Breadcrumb } from "@/app/browse/page";
+import { Breadcrumb } from "@/components/marketplace/breadcrumb";
 import { sampleCart, getProduct } from "@/lib/data";
 import { formatBDT } from "@/lib/utils";
 

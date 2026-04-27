@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-import { Breadcrumb } from "@/app/browse/page";
+import { Breadcrumb } from "@/components/marketplace/breadcrumb";
 import { ProductCard } from "@/components/marketplace/product-card";
 import { FiltersSidebar } from "@/components/marketplace/filters-sidebar";
 import { products } from "@/lib/data";

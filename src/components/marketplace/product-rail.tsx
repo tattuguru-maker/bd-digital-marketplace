@@ -25,7 +25,7 @@ export function ProductRail({
   subtitle,
   link,
   children,
-  itemWidthClass = "w-[180px] sm:w-[200px] md:w-[220px]",
+  itemWidthClass = "w-[200px] sm:w-[230px] md:w-[260px] lg:w-[270px]",
   className,
 }: RailProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -67,14 +67,14 @@ export function ProductRail({
               {eyebrow}
             </div>
           )}
-          <h2 className="mt-1 font-display text-xl font-bold md:text-2xl">{title}</h2>
-          {subtitle && <p className="mt-1 max-w-xl text-sm text-fg-muted">{subtitle}</p>}
+          <h2 className="mt-1 font-display text-2xl font-bold md:text-[28px] md:leading-tight">{title}</h2>
+          {subtitle && <p className="mt-1 max-w-xl text-[14px] text-fg-muted md:text-[15px]">{subtitle}</p>}
         </div>
         <div className="flex items-center gap-2">
           {link && (
             <Link
               href={link.href}
-              className="text-[13px] text-iris-200 hover:text-iris-100"
+              className="text-[14px] font-medium text-iris-200 hover:text-iris-100"
             >
               {link.label} →
             </Link>
@@ -85,20 +85,20 @@ export function ProductRail({
               disabled={!canPrev}
               onClick={() => scrollBy(-1)}
             >
-              <ChevronLeft size={16} />
+              <ChevronLeft size={18} />
             </RailButton>
             <RailButton
               ariaLabel="Scroll right"
               disabled={!canNext}
               onClick={() => scrollBy(1)}
             >
-              <ChevronRight size={16} />
+              <ChevronRight size={18} />
             </RailButton>
           </div>
         </div>
       </div>
 
-      <div className="relative mt-5">
+      <div className="relative mt-6">
         {/* Edge fades */}
         <div
           aria-hidden
@@ -119,7 +119,7 @@ export function ProductRail({
           ref={scrollerRef}
           className="container-page scrollbar-none overflow-x-auto scroll-smooth"
         >
-          <div className="flex gap-3 pb-1 snap-x snap-mandatory">
+          <div className="flex gap-4 pb-1 snap-x snap-mandatory">
             {items.map((child, i) => (
               <div
                 key={i}
@@ -152,7 +152,7 @@ function RailButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "glass-pill grid h-9 w-9 place-items-center rounded-full text-fg-muted transition",
+        "glass-pill grid h-10 w-10 place-items-center rounded-full text-fg-muted transition",
         "hover:text-fg hover:bg-white/10",
         "disabled:opacity-35 disabled:cursor-not-allowed disabled:hover:bg-transparent",
       )}

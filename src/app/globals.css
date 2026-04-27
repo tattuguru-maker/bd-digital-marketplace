@@ -102,12 +102,16 @@ body::before {
   width: 100%;
   margin-inline: auto;
   padding-inline: 1rem;
-  max-width: 80rem;
+  max-width: 88rem; /* 1408px — gives the marketplace more breathing room on desktop */
   @media (min-width: 640px) {
-    padding-inline: 1.5rem;
+    padding-inline: 1.75rem;
   }
   @media (min-width: 1024px) {
-    padding-inline: 2rem;
+    padding-inline: 2.25rem;
+  }
+  @media (min-width: 1536px) {
+    max-width: 96rem; /* 1536px on 2xl screens */
+    padding-inline: 2.75rem;
   }
 }
 

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Award, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { RatingStars } from "@/components/marketplace/rating-stars";
-import { Breadcrumb } from "@/app/browse/page";
+import { Breadcrumb } from "@/components/marketplace/breadcrumb";
 import { sellers, productsBySeller } from "@/lib/data";
 import { formatNumber } from "@/lib/utils";
 

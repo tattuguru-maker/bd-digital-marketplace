@@ -3,7 +3,7 @@ import { Trash2, ShieldCheck, Tag, ArrowRight, Minus, Plus } from "lucide-react"
 import { Button, ButtonLink } from "@/components/ui/button";
 import { ProductArt } from "@/components/marketplace/product-art";
 import { PaymentMethods } from "@/components/marketplace/payment-methods";
-import { Breadcrumb } from "@/app/browse/page";
+import { Breadcrumb } from "@/components/marketplace/breadcrumb";
 import { Badge } from "@/components/ui/badge";
 import { sampleCart, getProduct } from "@/lib/data";
 import { formatBDT } from "@/lib/utils";
