@@ -33,7 +33,7 @@ const faqs = [
   { q: "Can I pay with bKash, Nagad or Rocket?", a: "Absolutely. We accept bKash, Nagad, Rocket, Upay, Visa, Mastercard, Amex and bank transfers. Paying with bKash gets you an extra 2% discount." },
   { q: "What is buyer protection?", a: "Every order is held in escrow until delivery is verified. If your product doesn't work or doesn't arrive, you get a free replacement or full refund." },
   { q: "Will my game account get banned for top-ups?", a: "No. Our gaming sellers use official top-up channels. Just provide your in-game player ID — never your password — and the top-up is applied directly to your account." },
-  { q: "How do I become a seller?", a: "Apply at /sell. Submit your NID, business info and your Facebook page (if any). We verify within 12–24 hours. During the onboarding phase, sellers pay 0% transaction fees." },
+  { q: "How do I become a seller?", a: "Apply at /sell. Submit your NID, business info and your Facebook page (if any). We verify within 12–24 hours. During the onboarding phase, sellers pay 0% platform fees." },
   { q: "What about taxes?", a: "Sellers are responsible for their own tax filings. Digibazar provides each seller with a monthly transaction statement to make filings easier." },
   { q: "Can I refund after I've used my product?", a: "If the product worked and you've consumed it (e.g., used your CD key), refunds aren't available. Refunds apply to delivery or quality issues — see our refund policy." },
 ];

@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  Zap, ShieldCheck, Award, Clock, Globe, RefreshCw, MessageCircle,
-  Heart, Share2, ChevronDown, CheckCircle2, ThumbsUp,
+  Zap, ShieldCheck, Award, Clock, Globe, RefreshCw,
+  Heart, Share2, ChevronDown, CheckCircle2, ThumbsUp, Users,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button, ButtonLink } from "@/components/ui/button";
@@ -10,9 +9,11 @@ import { ProductArt } from "@/components/marketplace/product-art";
 import { ProductCard } from "@/components/marketplace/product-card";
 import { RatingStars } from "@/components/marketplace/rating-stars";
 import { PaymentMethods } from "@/components/marketplace/payment-methods";
-import { Breadcrumb } from "@/app/browse/page";
+import { SellerOffersPanel } from "@/components/marketplace/seller-offers-panel";
+import { Breadcrumb } from "@/components/marketplace/breadcrumb";
 import {
   getProduct, getSeller, products, reviewsForProduct, productsByCategory,
+  getOffersForProduct,
 } from "@/lib/data";
 import { discountPercent, formatBDT, formatNumber, timeAgo } from "@/lib/utils";
 
@@ -21,6 +22,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = getProduct(slug);
   if (!product) return notFound();
   const seller = getSeller(product.sellerId)!;
+  const offers = getOffersForProduct(product.id);
+  const bestOffer = offers.slice().sort((a, b) => a.price - b.price)[0];
+  const fromPrice = bestOffer?.price ?? product.price;
   const productReviews = reviewsForProduct(product.id);
   const related = productsByCategory(product.category)
     .filter((p) => p.id !== product.id)
@@ -35,6 +39,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const discount = product.originalPrice
     ? discountPercent(product.originalPrice, product.price)
     : 0;
+  const fromOriginal = bestOffer?.originalPrice;
 
   return (
     <div className="container-page py-8">
@@ -99,20 +104,28 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </span>
           </div>
 
-          <div className="mt-5 surface-card p-5">
-            <div className="flex items-end gap-3">
-              <span className="font-display text-3xl font-extrabold gradient-text">
-                {formatBDT(product.price)}
+          <div className="mt-5 surface-card p-6">
+            <div className="flex items-baseline gap-2 flex-wrap">
+              <span className="text-[13px] font-medium text-fg-subtle">From</span>
+              <span className="font-display text-3xl font-extrabold gradient-text md:text-4xl">
+                {formatBDT(fromPrice)}
               </span>
-              {product.originalPrice && (
+              {fromOriginal && fromOriginal > fromPrice && (
+                <>
+                  <span className="text-fg-subtle line-through">{formatBDT(fromOriginal)}</span>
+                  <Badge variant="danger">-{discountPercent(fromOriginal, fromPrice)}%</Badge>
+                </>
+              )}
+              {!fromOriginal && product.originalPrice && (
                 <>
                   <span className="text-fg-subtle line-through">{formatBDT(product.originalPrice)}</span>
                   <Badge variant="danger">-{discount}%</Badge>
                 </>
               )}
             </div>
-            <div className="mt-1 inline-flex items-center gap-1.5 text-[12px] text-fg-subtle">
-              Pay in 4 installments via bKash · ৳{Math.round(product.price / 4)} each
+            <div className="mt-1.5 inline-flex items-center gap-1.5 text-[12.5px] text-fg-subtle">
+              <Users size={13} className="text-iris-300" />
+              {offers.length} sellers offer this · best price shown
             </div>
 
             {product.variants && (
@@ -186,29 +199,32 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <TrustPill icon={<Award size={14} className="text-gold-400" />} label="Verified seller" sub={seller.responseTime} />
           </div>
 
-          {/* Seller card */}
-          <Link href={`/seller/${seller.id}`} className="mt-4 surface-card flex items-center gap-4 p-4 transition hover:border-iris-400/40">
-            <div className={`grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br ${seller.avatarColor} font-display text-xl font-extrabold text-white`}>
-              {seller.displayName[0]}
+          {/* All sellers CTA */}
+          <a
+            href="#offers"
+            className="mt-4 surface-card flex items-center gap-4 p-4 transition hover:border-iris-400/40"
+          >
+            <div className="grid h-12 w-12 place-items-center rounded-xl bg-iris-500/15 text-iris-300">
+              <Users size={20} />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="truncate font-semibold">{seller.displayName}</span>
-                {seller.verified && <Award size={14} className="text-iris-300" />}
+              <div className="text-[14px] font-semibold">
+                Available from {offers.length} verified sellers
               </div>
-              <div className="text-[11px] text-fg-subtle">@{seller.handle} · {seller.location.split(",")[0]}</div>
-              <div className="mt-1 flex items-center gap-2">
-                <RatingStars rating={seller.rating} size={11} />
-                <span className="text-[11px] text-fg-muted">
-                  {seller.rating.toFixed(2)} · {formatNumber(seller.totalSales)} sales
-                </span>
+              <div className="text-[12px] text-fg-subtle">
+                Compare prices, delivery times and warranties below.
               </div>
             </div>
-            <Button variant="outline" size="sm">
-              <MessageCircle size={13} /> Chat
-            </Button>
-          </Link>
+            <span className="glass-pill inline-flex h-9 items-center rounded-lg px-3 text-[12.5px] font-medium text-fg-muted">
+              See offers
+            </span>
+          </a>
         </div>
+      </div>
+
+      {/* MULTI-SELLER OFFERS */}
+      <div id="offers" className="mt-12 scroll-mt-24">
+        <SellerOffersPanel offers={offers} />
       </div>
 
       {/* TABS */}
@@ -324,7 +340,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <div className="mt-5 rounded-lg border border-iris-400/30 bg-iris-500/10 p-3 text-[12px] text-iris-100">
               <div className="font-semibold">Onboarding offer</div>
               <p className="mt-1 text-iris-200/80">
-                Sellers pay <strong>0% transaction fees</strong> right now — savings passed on to you.
+                Sellers pay <strong>0% platform fees</strong> right now — savings passed on to you.
               </p>
             </div>
 

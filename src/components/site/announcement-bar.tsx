@@ -2,7 +2,7 @@ import { Megaphone, Sparkles } from "lucide-react";
 
 export function AnnouncementBar() {
   const items = [
-    { icon: Sparkles, text: "Onboarding offer: 0% transaction fees for sellers — limited time" },
+    { icon: Sparkles, text: "Onboarding offer: 0% platform fees for sellers — limited time" },
     { icon: Megaphone, text: "৳200 cashback on first order via bKash · code WELCOME200" },
     { icon: Sparkles, text: "Verified sellers · Instant delivery · Buyer protection on every order" },
     { icon: Megaphone, text: "Bring your Facebook page customers — keep your reputation, grow your sales" },

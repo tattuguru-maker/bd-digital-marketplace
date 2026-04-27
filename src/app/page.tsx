@@ -120,13 +120,13 @@ export default function HomePage() {
   );
 
   return (
-    <div className="space-y-14 pb-20 md:space-y-16">
+    <div className="space-y-16 pb-24 md:space-y-20">
       {/* HERO */}
       <HeroCarousel slides={heroSlides} sidePanels={heroSidePanels} />
 
       {/* PROMO BANNER ROW */}
       <section className="container-page">
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-3">
           {promoBanners.map((b) => (
             <PromoBannerCard key={b.title} banner={b} />
           ))}
@@ -146,11 +146,11 @@ export default function HomePage() {
 
       {/* EXPLORE BY PLATFORMS */}
       <section className="container-page">
-        <div className="mb-5">
+        <div className="mb-6">
           <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-iris-300">
             Shortcuts
           </div>
-          <h2 className="mt-1 font-display text-xl font-bold md:text-2xl">
+          <h2 className="mt-1 font-display text-2xl font-bold md:text-[28px]">
             Explore by platform
           </h2>
         </div>
@@ -188,12 +188,12 @@ export default function HomePage() {
 
       {/* DISCOVER BY CATEGORY */}
       <section className="container-page">
-        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-iris-300">
               Browse
             </div>
-            <h2 className="mt-1 font-display text-xl font-bold md:text-2xl">
+            <h2 className="mt-1 font-display text-2xl font-bold md:text-[28px]">
               Discover by category
             </h2>
           </div>
@@ -207,7 +207,7 @@ export default function HomePage() {
           eyebrow="Direct top-up"
           title="Best selling game top-ups"
           link={{ label: "All top-ups", href: "/category/game-topup" }}
-          itemWidthClass="w-[160px] sm:w-[180px] md:w-[200px]"
+          itemWidthClass="w-[180px] sm:w-[210px] md:w-[230px] lg:w-[240px]"
         >
           {gameTopups.map((p) => (
             <ProductCard key={p.id} product={p} />
@@ -217,11 +217,11 @@ export default function HomePage() {
 
       {/* DISCOVER BY PRICE */}
       <section className="container-page">
-        <div className="mb-5">
+        <div className="mb-6">
           <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-iris-300">
             Find a deal
           </div>
-          <h2 className="mt-1 font-display text-xl font-bold md:text-2xl">
+          <h2 className="mt-1 font-display text-2xl font-bold md:text-[28px]">
             Discover by price
           </h2>
         </div>

@@ -11,12 +11,12 @@ const tiers = [
 
 export function PricePills() {
   return (
-    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-6">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
       {tiers.map((t) => (
         <Link
           key={t.label}
           href={t.href}
-          className="glass-pill flex items-center justify-center rounded-xl px-4 py-4 text-[13px] font-semibold text-fg transition hover:-translate-y-0.5 hover:bg-white/10"
+          className="glass-pill flex items-center justify-center rounded-xl px-5 py-5 text-[15px] font-semibold text-fg transition hover:-translate-y-0.5 hover:bg-white/10"
         >
           {t.label}
         </Link>

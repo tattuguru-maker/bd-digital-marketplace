@@ -46,7 +46,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <TrendingUp size={11} /> 0% fees
               </div>
               <p className="mt-1 text-[12px] text-iris-100">
-                You&apos;re on our <strong>Onboarding plan</strong>. No transaction fees apply.
+                You&apos;re on our <strong>Onboarding plan</strong>. No platform fees apply.
               </p>
             </div>
           </div>

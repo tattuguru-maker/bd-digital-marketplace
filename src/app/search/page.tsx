@@ -1,7 +1,6 @@
 import { Search } from "lucide-react";
-import { Breadcrumb } from "@/app/browse/page";
-import { ProductCard } from "@/components/marketplace/product-card";
-import { FiltersSidebar } from "@/components/marketplace/filters-sidebar";
+import { Breadcrumb } from "@/components/marketplace/breadcrumb";
+import { ProductGrid } from "@/components/marketplace/product-grid";
 import { products } from "@/lib/data";
 
 export const metadata = { title: "Search · Digibazar" };
@@ -16,13 +15,13 @@ export default async function SearchPage({
   const matches = term
     ? products.filter((p) =>
         [p.name, p.platform ?? "", p.category, ...p.tags].some((s) =>
-          s.toLowerCase().includes(term)
-        )
+          s.toLowerCase().includes(term),
+        ),
       )
     : products;
 
   return (
-    <div className="container-page py-8">
+    <div className="container-page py-8 md:py-10">
       <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Search" }]} />
 
       <div className="mt-4">
@@ -33,18 +32,29 @@ export default async function SearchPage({
             placeholder="Search Netflix, Free Fire, Steam keys..."
             className="h-12 w-full rounded-full border border-white/10 bg-white/[0.04] pl-11 pr-4 text-[15px] placeholder:text-fg-subtle focus:border-iris-400/50 focus:bg-white/[0.06] focus:outline-none"
           />
-          <Search size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-fg-subtle" />
+          <Search
+            size={16}
+            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-fg-subtle"
+          />
         </form>
         <h1 className="mt-4 font-display text-2xl font-bold md:text-3xl">
-          {term ? <>Results for <span className="gradient-text">&ldquo;{term}&rdquo;</span></> : "All products"}
+          {term ? (
+            <>
+              Results for <span className="gradient-text">&ldquo;{term}&rdquo;</span>
+            </>
+          ) : (
+            "All products"
+          )}
         </h1>
-        <p className="mt-1 text-sm text-fg-muted">{matches.length} products found</p>
+        <p className="mt-1 text-sm text-fg-muted">
+          {matches.length} products found
+        </p>
       </div>
 
-      <div className="mt-6 flex gap-6">
-        <FiltersSidebar />
-        <div className="min-w-0 flex-1">
-          {matches.length === 0 ? (
+      <div className="mt-6">
+        <ProductGrid
+          initialProducts={matches}
+          emptyState={
             <div className="surface-card flex flex-col items-center gap-2 p-12 text-center">
               <div className="text-3xl">🔎</div>
               <h2 className="font-display text-lg font-bold">No matches</h2>
@@ -52,14 +62,8 @@ export default async function SearchPage({
                 Try a different keyword, or browse our categories.
               </p>
             </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
-              {matches.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
-          )}
-        </div>
+          }
+        />
       </div>
     </div>
   );

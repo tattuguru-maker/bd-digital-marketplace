@@ -604,6 +604,112 @@ export type Order = {
   total: number;
 };
 
+// Multi-seller offers ─ each product is sold by multiple verified sellers at different
+// prices, delivery times and regions. We deterministically generate offers from the
+// existing seller pool so render output stays stable across sessions.
+export type SellerOffer = {
+  id: string;
+  productId: string;
+  sellerId: string;
+  price: number;
+  originalPrice?: number;
+  stock: number;
+  delivery: DeliveryType;
+  region: Region;
+  warranty: string;
+  badges: string[]; // "Best Price", "Fast Delivery", "Top Rated"
+  payments: ("bkash" | "nagad" | "rocket" | "card" | "bank")[];
+};
+
+const REGION_POOL: Region[] = ["global", "bd", "asia", "in", "eu", "us"];
+const DELIVERY_POOL: DeliveryType[] = ["instant", "manual-15m", "manual-1h", "manual-24h"];
+const PAYMENT_POOLS: SellerOffer["payments"][] = [
+  ["bkash", "nagad", "rocket", "card"],
+  ["bkash", "nagad", "card"],
+  ["bkash", "rocket", "card", "bank"],
+  ["bkash", "nagad", "rocket"],
+  ["bkash", "card"],
+];
+const WARRANTIES = ["7 days", "14 days", "30 days", "Lifetime", "60 days"];
+
+// Tiny deterministic hash so we always pick the same sellers/prices for a given product.
+function hashString(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = (h * 16777619) >>> 0;
+  }
+  return h;
+}
+
+const productOffersCache: Record<string, SellerOffer[]> = {};
+
+export function getOffersForProduct(productId: string): SellerOffer[] {
+  if (productOffersCache[productId]) return productOffersCache[productId];
+  const product = products.find((p) => p.id === productId);
+  if (!product) return [];
+
+  const seed = hashString(productId);
+  const numOffers = 3 + (seed % 4); // 3–6 offers
+  const sellerPool = sellers.slice();
+
+  // Always include the canonical seller as offer #0 with the listed (lowest) price.
+  const ordered: Seller[] = [];
+  const canonical = sellerPool.find((s) => s.id === product.sellerId);
+  if (canonical) ordered.push(canonical);
+  // Round-robin through remaining sellers using the seed.
+  const remaining = sellerPool.filter((s) => s.id !== product.sellerId);
+  for (let i = 0; i < numOffers - 1 && i < remaining.length; i++) {
+    ordered.push(remaining[(seed + i * 7) % remaining.length]);
+  }
+
+  const base = product.price;
+  const offers: SellerOffer[] = ordered.map((seller, i) => {
+    const off = (seed + i * 31) >>> 0;
+    // First offer = best price (matches product.price). Others mark up 4-32%.
+    const markup = i === 0 ? 0 : 0.04 + ((off % 28) / 100);
+    const price = i === 0 ? base : Math.round(base * (1 + markup));
+    const originalPrice =
+      i === 0
+        ? product.originalPrice
+        : Math.round(price * (1 + 0.10 + ((off % 25) / 100)));
+    const delivery: DeliveryType =
+      i === 0 ? product.delivery : DELIVERY_POOL[(off >>> 3) % DELIVERY_POOL.length];
+    const region: Region =
+      i === 0 ? product.region : REGION_POOL[(off >>> 5) % REGION_POOL.length];
+    const stock = 1 + ((off >>> 7) % 240);
+    const warranty =
+      i === 0 ? (product.warranty || "30 days") : WARRANTIES[(off >>> 9) % WARRANTIES.length];
+    const payments = PAYMENT_POOLS[(off >>> 11) % PAYMENT_POOLS.length];
+
+    const badges: string[] = [];
+    if (i === 0) badges.push("Best Price");
+    if (seller.topRated) badges.push("Top Rated");
+    if (delivery === "instant") badges.push("Fast Delivery");
+
+    return {
+      id: `${productId}-offer-${seller.id}`,
+      productId,
+      sellerId: seller.id,
+      price,
+      originalPrice,
+      stock,
+      delivery,
+      region,
+      warranty,
+      badges,
+      payments,
+    };
+  });
+
+  productOffersCache[productId] = offers;
+  return offers;
+}
+
+export function offerCountForProduct(productId: string): number {
+  return getOffersForProduct(productId).length;
+}
+
 export const sellerOrders: Order[] = [
   { id: "BD-10248", createdAt: "2026-04-26T14:22:00Z", buyer: "Tanvir H.",   product: "Netflix Premium — 1 Month",     productId: "p1",  status: "delivered",  total: 220 },
   { id: "BD-10247", createdAt: "2026-04-26T13:51:00Z", buyer: "Sumaiya R.",  product: "Spotify Premium — 1 Month",     productId: "p2",  status: "delivered",  total: 180 },
