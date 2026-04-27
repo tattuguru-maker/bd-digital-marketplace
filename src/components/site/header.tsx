@@ -3,7 +3,6 @@ import {
   Search,
   Heart,
   ShoppingCart,
-  User,
   Bell,
   ChevronDown,
   Store,
@@ -13,8 +12,9 @@ import { Logo } from "@/components/site/logo";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { categories } from "@/lib/data";
+import { UserMenu } from "@/components/site/user-menu";
 
-export function Header() {
+export async function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-white/5 bg-bg/70 backdrop-blur-xl">
       {/* Row 1 — Logo + Search + Account actions */}
@@ -67,13 +67,7 @@ export function Header() {
 
           <div className="mx-1.5 hidden h-7 w-px bg-white/10 sm:block" />
 
-          <Link
-            href="/login"
-            className="hidden h-11 items-center rounded-full px-4 text-[14px] font-medium text-fg-muted hover:bg-white/5 hover:text-fg sm:inline-flex"
-          >
-            <User size={16} className="mr-1.5" />
-            Sign in
-          </Link>
+          <UserMenu />
 
           <ButtonLink
             href="/sell"
