@@ -1,4 +1,9 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useQuery } from "convex/react";
+import { useAuthActions } from "@convex-dev/auth/react";
 import {
   User,
   LogOut,
@@ -8,13 +13,21 @@ import {
   LayoutDashboard,
   ShieldCheck,
 } from "lucide-react";
-import { logout } from "@/app/actions/auth";
-import { getProfile } from "@/lib/auth/guards";
+import { api } from "@/lib/convex/api";
 
-export async function UserMenu() {
-  const { user, profile } = await getProfile();
+type CurrentUser = {
+  id: string;
+  email?: string | null;
+  fullName?: string | null;
+  role: "buyer" | "seller" | "admin";
+};
 
-  if (!user) {
+export function UserMenu() {
+  const router = useRouter();
+  const { signOut } = useAuthActions();
+  const me = useQuery(api.users.current) as CurrentUser | null | undefined;
+
+  if (me === null) {
     return (
       <Link
         href="/login"
@@ -26,10 +39,22 @@ export async function UserMenu() {
     );
   }
 
-  const name = profile?.full_name || user.email?.split("@")[0] || "Account";
+  if (me === undefined) {
+    // Auth still resolving — render a placeholder slot of the same width to
+    // avoid layout shift.
+    return <div aria-hidden className="hidden h-11 w-32 sm:inline-block" />;
+  }
+
+  const name = me.fullName || me.email?.split("@")[0] || "Account";
   const initial = name.slice(0, 1).toUpperCase();
-  const isSeller = profile?.role === "seller";
-  const isAdmin = profile?.role === "admin";
+  const isSeller = me.role === "seller";
+  const isAdmin = me.role === "admin";
+
+  async function onSignOut() {
+    await signOut();
+    router.push("/");
+    router.refresh();
+  }
 
   return (
     <div className="relative hidden sm:inline-block group">
@@ -43,18 +68,22 @@ export async function UserMenu() {
         <span className="max-w-28 truncate">{name}</span>
       </button>
 
-      {/* Dropdown — uses CSS hover for now since the header is a server
-          component. Tab/click users get focus-within. */}
       <div className="invisible absolute right-0 top-full z-50 w-64 translate-y-1 opacity-0 transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
         <div className="surface-card mt-2 overflow-hidden p-1.5">
           <div className="px-3 py-2.5">
             <div className="text-[13px] font-semibold text-fg">{name}</div>
-            <div className="text-[11.5px] text-fg-subtle">{user.email}</div>
+            <div className="text-[11.5px] text-fg-subtle">{me.email}</div>
           </div>
           <div className="my-1 h-px bg-white/5" />
-          <MenuItem href="/orders" icon={<ShoppingBag size={14} />}>My orders</MenuItem>
-          <MenuItem href="/wishlist" icon={<Heart size={14} />}>Wishlist</MenuItem>
-          <MenuItem href="/notifications" icon={<Bell size={14} />}>Notifications</MenuItem>
+          <MenuItem href="/orders" icon={<ShoppingBag size={14} />}>
+            My orders
+          </MenuItem>
+          <MenuItem href="/wishlist" icon={<Heart size={14} />}>
+            Wishlist
+          </MenuItem>
+          <MenuItem href="/notifications" icon={<Bell size={14} />}>
+            Notifications
+          </MenuItem>
           {isSeller && (
             <>
               <div className="my-1 h-px bg-white/5" />
@@ -72,14 +101,13 @@ export async function UserMenu() {
             </>
           )}
           <div className="my-1 h-px bg-white/5" />
-          <form action={logout}>
-            <button
-              type="submit"
-              className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-[13px] text-fg-muted hover:bg-white/5 hover:text-fg"
-            >
-              <LogOut size={14} /> Sign out
-            </button>
-          </form>
+          <button
+            type="button"
+            onClick={onSignOut}
+            className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-[13px] text-fg-muted hover:bg-white/5 hover:text-fg"
+          >
+            <LogOut size={14} /> Sign out
+          </button>
         </div>
       </div>
     </div>

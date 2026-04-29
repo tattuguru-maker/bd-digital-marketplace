@@ -1,19 +1,30 @@
-import type { NextRequest } from "next/server";
-import { updateSession } from "@/lib/supabase/proxy";
+import {
+  convexAuthNextjsMiddleware,
+  createRouteMatcher,
+  nextjsMiddlewareRedirect,
+} from "@convex-dev/auth/nextjs/server";
 
-export async function proxy(request: NextRequest) {
-  return updateSession(request);
-}
+const isProtectedRoute = createRouteMatcher([
+  "/dashboard(.*)",
+  "/orders(.*)",
+  "/wishlist(.*)",
+  "/notifications(.*)",
+  "/admin(.*)",
+  "/sell/apply(.*)",
+]);
+
+export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
+  if (!isProtectedRoute(request)) return;
+
+  if (!(await convexAuth.isAuthenticated())) {
+    return nextjsMiddlewareRedirect(
+      request,
+      `/login?next=${encodeURIComponent(request.nextUrl.pathname)}`,
+    );
+  }
+});
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico
-     * - any file extension (e.g. .png, .svg, .css, .js, .woff)
-     */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.).*)",
-  ],
+  // Don't run on static assets / image optimisation / file requests.
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)"],
 };

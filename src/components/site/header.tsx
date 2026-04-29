@@ -14,7 +14,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { categories } from "@/lib/data";
 import { UserMenu } from "@/components/site/user-menu";
 
-export async function Header() {
+export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-white/5 bg-bg/70 backdrop-blur-xl">
       {/* Row 1 — Logo + Search + Account actions */}

@@ -1,42 +1,94 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, type FormEvent } from "react";
+import { useAuthActions } from "@convex-dev/auth/react";
 import { ArrowRight, Lock, Mail, Phone, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { signup } from "@/app/actions/auth";
 import { Field, FormError, FormSuccess } from "@/components/auth/auth-fields";
-import type { AuthFormState } from "@/lib/auth/schemas";
+import { SignupSchema } from "@/lib/auth/schemas";
+import { isDisposableEmail } from "@/lib/auth/disposable-emails";
 
-export function SignupForm() {
-  const [state, action, pending] = useActionState<AuthFormState, FormData>(
-    signup,
-    undefined,
-  );
+export function SignupForm({ next = "/" }: { next?: string }) {
+  const router = useRouter();
+  const { signIn } = useAuthActions();
+  const [pending, setPending] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string[]>>({});
+  const [message, setMessage] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
-  if (state && "ok" in state && state.ok === true) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setErrors({});
+    setMessage(null);
+    setSuccess(null);
+
+    const fd = new FormData(e.currentTarget);
+    const parsed = SignupSchema.safeParse({
+      fullName: fd.get("fullName"),
+      email: fd.get("email"),
+      phone: fd.get("phone"),
+      password: fd.get("password"),
+      agree: fd.get("agree") ?? "",
+    });
+    if (!parsed.success) {
+      const out: Record<string, string[]> = {};
+      for (const issue of parsed.error.issues) {
+        const key = issue.path[0]?.toString() ?? "_form";
+        (out[key] ||= []).push(issue.message);
+      }
+      setErrors(out);
+      return;
+    }
+    if (isDisposableEmail(parsed.data.email)) {
+      setErrors({
+        email: ["Use a real email — disposable mailboxes aren't allowed."],
+      });
+      return;
+    }
+
+    setPending(true);
+    try {
+      await signIn("password", {
+        email: parsed.data.email,
+        password: parsed.data.password,
+        fullName: parsed.data.fullName,
+        flow: "signUp",
+      });
+      setSuccess(
+        `Welcome to Digibazar, ${parsed.data.fullName.split(" ")[0]}! You're signed in.`,
+      );
+      router.push(next || "/");
+      router.refresh();
+    } catch (err) {
+      setMessage(
+        err instanceof Error && err.message.toLowerCase().includes("already")
+          ? "An account with that email already exists. Try signing in instead."
+          : "Could not create your account. Try again in a moment.",
+      );
+    } finally {
+      setPending(false);
+    }
+  }
+
+  if (success) {
     return (
       <div className="space-y-3">
-        <FormSuccess message={state.message ?? "Check your email to finish signing up."} />
-        <p className="text-[13px] text-fg-muted">
-          We sent you a confirmation link. Open it on this device and you&apos;ll be
-          logged in automatically.
-        </p>
+        <FormSuccess message={success} />
         <Link
-          href="/login"
+          href="/"
           className="text-[13px] font-medium text-iris-200 hover:text-iris-100"
         >
-          Back to sign in →
+          Continue browsing →
         </Link>
       </div>
     );
   }
 
   return (
-    <form action={action} className="space-y-3">
-      {state && "ok" in state && state.ok === false && state.message && (
-        <FormError message={state.message} />
-      )}
+    <form onSubmit={onSubmit} className="space-y-3">
+      {message && <FormError message={message} />}
       <div className="grid gap-3 md:grid-cols-2">
         <Field
           name="fullName"
@@ -45,7 +97,7 @@ export function SignupForm() {
           placeholder="Your name"
           autoComplete="name"
           required
-          errors={state && !state.ok ? state.errors?.fullName : undefined}
+          errors={errors.fullName}
         />
         <Field
           name="phone"
@@ -53,7 +105,7 @@ export function SignupForm() {
           icon={<Phone size={14} />}
           placeholder="01XXXXXXXXX"
           autoComplete="tel"
-          errors={state && !state.ok ? state.errors?.phone : undefined}
+          errors={errors.phone}
         />
       </div>
       <Field
@@ -64,7 +116,7 @@ export function SignupForm() {
         placeholder="you@example.com"
         autoComplete="email"
         required
-        errors={state && !state.ok ? state.errors?.email : undefined}
+        errors={errors.email}
       />
       <Field
         name="password"
@@ -74,7 +126,7 @@ export function SignupForm() {
         placeholder="At least 8 characters"
         autoComplete="new-password"
         required
-        errors={state && !state.ok ? state.errors?.password : undefined}
+        errors={errors.password}
       />
 
       <label className="flex items-start gap-2 text-[12px] text-fg-muted">
@@ -96,8 +148,8 @@ export function SignupForm() {
           .
         </span>
       </label>
-      {state && !state.ok && state.errors?.agree && (
-        <div className="text-[11.5px] text-danger">{state.errors.agree[0]}</div>
+      {errors.agree && (
+        <div className="text-[11.5px] text-danger">{errors.agree[0]}</div>
       )}
 
       <Button size="lg" className="w-full" disabled={pending}>

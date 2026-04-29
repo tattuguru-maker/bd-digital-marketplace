@@ -59,7 +59,16 @@ export const SellerApplySchema = z.object({
     )
     .trim(),
   location: z.string().min(2, "Required.").max(80).trim(),
-  bio: z.string().min(40, "Tell buyers a bit about your store (at least 40 chars).").max(500).trim(),
+  bio: z
+    .string()
+    .trim()
+    .max(500, "Bio must be 500 characters or fewer.")
+    .refine(
+      (v) => v.length === 0 || v.length >= 40,
+      "Bio must be at least 40 characters when provided.",
+    )
+    .optional()
+    .or(z.literal("")),
   nidNumber: z
     .string()
     .trim()
