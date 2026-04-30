@@ -32,7 +32,7 @@ export default function SellPage() {
               </p>
 
               <div className="mt-7 flex flex-wrap items-center gap-3">
-                <ButtonLink href="#apply" size="lg">
+                <ButtonLink href="/sell/apply" size="lg">
                   Apply to sell <ArrowRight size={16} />
                 </ButtonLink>
                 <ButtonLink href="/dashboard" variant="secondary" size="lg">
@@ -233,7 +233,7 @@ export default function SellPage() {
               Bangladesh&apos;s scattered Facebook digital sellers deserve a real platform. Let&apos;s build it together.
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-3">
-              <ButtonLink href="#apply" variant="gold" size="lg">Apply now</ButtonLink>
+              <ButtonLink href="/sell/apply" variant="gold" size="lg">Apply now</ButtonLink>
               <ButtonLink href="/dashboard" variant="secondary" size="lg" className="!bg-white/15 hover:!bg-white/20 !text-white">
                 Preview dashboard
               </ButtonLink>

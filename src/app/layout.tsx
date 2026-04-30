@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Inter, Sora, JetBrains_Mono } from "next/font/google";
+import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 import "./globals.css";
 import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
 import { AnnouncementBar } from "@/components/site/announcement-bar";
+import { ConvexClientProviders } from "@/lib/convex/client";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -39,16 +41,20 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} ${sora.variable} ${jetbrains.variable} h-full antialiased`}
-    >
-      <body className="relative min-h-full flex flex-col">
-        <AnnouncementBar />
-        <Header />
-        <main className="relative z-10 flex-1">{children}</main>
-        <Footer />
-      </body>
-    </html>
+    <ConvexAuthNextjsServerProvider>
+      <html
+        lang="en"
+        className={`${inter.variable} ${sora.variable} ${jetbrains.variable} h-full antialiased`}
+      >
+        <body className="relative min-h-full flex flex-col">
+          <ConvexClientProviders>
+            <AnnouncementBar />
+            <Header />
+            <main className="relative z-10 flex-1">{children}</main>
+            <Footer />
+          </ConvexClientProviders>
+        </body>
+      </html>
+    </ConvexAuthNextjsServerProvider>
   );
 }
