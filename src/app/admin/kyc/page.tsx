@@ -47,11 +47,10 @@ export default function AdminKycPage() {
     | undefined;
 
   return (
-    <div className="container-page py-8">
+    <div>
       <Breadcrumb
         items={[
-          { label: "Home", href: "/" },
-          { label: "Admin", href: "/admin/kyc" },
+          { label: "Admin", href: "/admin" },
           { label: "KYC review" },
         ]}
       />
