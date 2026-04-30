@@ -133,6 +133,9 @@ async function uniqueSlug(ctx: QueryCtx, base: string, ignoreId?: Id<"listings">
 async function decorateListing(ctx: QueryCtx, l: Doc<"listings">) {
   const seller = await ctx.db.get(l.sellerId);
   const imageUrls = await Promise.all(l.images.map((id) => ctx.storage.getUrl(id)));
+  const pairs = l.images
+    .map((id, idx) => ({ id, url: imageUrls[idx] }))
+    .filter((p): p is { id: typeof p.id; url: string } => !!p.url);
   return {
     id: l._id,
     title: l.title,
@@ -153,8 +156,8 @@ async function decorateListing(ctx: QueryCtx, l: Doc<"listings">) {
     sold: l.sold,
     views: l.views,
     createdAt: l._creationTime,
-    images: imageUrls.filter((u): u is string => !!u),
-    imageIds: l.images,
+    images: pairs.map((p) => p.url),
+    imageIds: pairs.map((p) => p.id),
     seller: seller
       ? {
           id: seller._id,

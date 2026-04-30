@@ -104,7 +104,7 @@ function ListingCard({ listing }: { listing: Listing }) {
     : 0;
   return (
     <Link
-      href={`/listing/${listing.slug}`}
+      href={`/product/${listing.slug}`}
       className="group surface-card flex h-full flex-col overflow-hidden transition hover:border-iris-400/40 hover:bg-white/[0.06]"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-white/5">
