@@ -37,6 +37,40 @@ const kycReviewDecision = v.union(
   v.literal("needs_more_info"),
 );
 
+const listingStatus = v.union(
+  v.literal("draft"),
+  v.literal("active"),
+  v.literal("archived"),
+);
+
+const listingCategory = v.union(
+  v.literal("streaming"),
+  v.literal("ai-tools"),
+  v.literal("game-topup"),
+  v.literal("cd-keys"),
+  v.literal("gift-cards"),
+  v.literal("software"),
+  v.literal("vpn"),
+  v.literal("education"),
+  v.literal("social"),
+);
+
+const listingDelivery = v.union(
+  v.literal("instant"),
+  v.literal("manual-15m"),
+  v.literal("manual-1h"),
+  v.literal("manual-24h"),
+);
+
+const listingRegion = v.union(
+  v.literal("global"),
+  v.literal("bd"),
+  v.literal("in"),
+  v.literal("asia"),
+  v.literal("eu"),
+  v.literal("us"),
+);
+
 export default defineSchema({
   // ---------------------------------------------------------------------
   // Tables required by Convex Auth.
@@ -111,6 +145,42 @@ export default defineSchema({
     decision: kycReviewDecision,
     notes: v.optional(v.string()),
   }).index("by_seller", ["sellerId"]),
+
+  // ---------------------------------------------------------------------
+  // listings — products posted by verified sellers.
+  // ---------------------------------------------------------------------
+  listings: defineTable({
+    sellerId: v.id("sellers"),
+    userId: v.id("users"), // owner shortcut for permission checks
+
+    title: v.string(),
+    slug: v.string(),
+    category: listingCategory,
+    shortDesc: v.string(),
+    longDesc: v.string(),
+
+    priceTaka: v.number(),
+    originalPriceTaka: v.optional(v.number()),
+    stock: v.number(),
+
+    delivery: listingDelivery,
+    region: listingRegion,
+    platform: v.optional(v.string()),
+    warranty: v.optional(v.string()),
+
+    images: v.array(v.id("_storage")),
+
+    status: listingStatus,
+    publishedAt: v.optional(v.number()),
+    archivedAt: v.optional(v.number()),
+    sold: v.number(), // bumped on order completion (future)
+    views: v.number(),
+  })
+    .index("by_seller", ["sellerId"])
+    .index("by_user", ["userId"])
+    .index("by_status", ["status"])
+    .index("by_category_status", ["category", "status"])
+    .index("by_slug", ["slug"]),
 
   // ---------------------------------------------------------------------
   // authAuditLog — login attempts, signups, suspicious activity.

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { ProductGrid } from "@/components/marketplace/product-grid";
 import { Breadcrumb } from "@/components/marketplace/breadcrumb";
+import { LiveListingsRail } from "@/components/marketplace/live-listings-rail";
 import { Badge } from "@/components/ui/badge";
 import { categories, productsByCategory, type CategorySlug } from "@/lib/data";
 
@@ -38,6 +39,11 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           </div>
         </div>
       </div>
+
+      <LiveListingsRail
+        category={slug as CategorySlug}
+        title={`Live ${category.name.toLowerCase()} from sellers`}
+      />
 
       <div className="mt-7">
         <ProductGrid

@@ -1,8 +1,8 @@
-import { notFound } from "next/navigation";
 import {
   Zap, ShieldCheck, Award, Clock, Globe, RefreshCw,
   Heart, Share2, ChevronDown, CheckCircle2, ThumbsUp, Users,
 } from "lucide-react";
+import { RealProductView } from "./real-product-view";
 import { Badge } from "@/components/ui/badge";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { ProductArt } from "@/components/marketplace/product-art";
@@ -20,7 +20,7 @@ import { discountPercent, formatBDT, formatNumber, timeAgo } from "@/lib/utils";
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const product = getProduct(slug);
-  if (!product) return notFound();
+  if (!product) return <RealProductView slug={slug} />;
   const seller = getSeller(product.sellerId)!;
   const offers = getOffersForProduct(product.id);
   const bestOffer = offers.slice().sort((a, b) => a.price - b.price)[0];

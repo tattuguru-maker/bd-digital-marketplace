@@ -1,5 +1,6 @@
 import { ProductGrid } from "@/components/marketplace/product-grid";
 import { Breadcrumb } from "@/components/marketplace/breadcrumb";
+import { LiveListingsRail } from "@/components/marketplace/live-listings-rail";
 import { products } from "@/lib/data";
 
 export const metadata = {
@@ -23,6 +24,8 @@ export default function BrowsePage() {
           </p>
         </div>
       </div>
+
+      <LiveListingsRail title="Live from Digibazar sellers" />
 
       <div className="mt-7">
         <ProductGrid initialProducts={products} />
