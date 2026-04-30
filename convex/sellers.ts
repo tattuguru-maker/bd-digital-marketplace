@@ -208,7 +208,11 @@ export const approve = mutation({
       reviewerId: callerId,
       rejectionReason: undefined,
     });
-    await ctx.db.patch(seller.userId, { role: "seller" });
+    // Promote the seller's account, but never downgrade an admin.
+    const owner = await ctx.db.get(seller.userId);
+    if (owner && owner.role !== "admin") {
+      await ctx.db.patch(seller.userId, { role: "seller" });
+    }
     await ctx.db.insert("kycReviews", {
       sellerId,
       reviewerId: callerId,
