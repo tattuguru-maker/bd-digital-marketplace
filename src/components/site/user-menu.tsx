@@ -95,8 +95,8 @@ export function UserMenu() {
           {isAdmin && (
             <>
               <div className="my-1 h-px bg-white/5" />
-              <MenuItem href="/admin/kyc" icon={<ShieldCheck size={14} />}>
-                Admin · KYC review
+              <MenuItem href="/admin" icon={<ShieldCheck size={14} />}>
+                Admin console
               </MenuItem>
             </>
           )}
