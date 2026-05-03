@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/marketplace/breadcrumb";
 import { api } from "@/lib/convex/api";
-import { cn, formatBDT } from "@/lib/utils";
+import { cleanConvexError, cn, formatBDT } from "@/lib/utils";
 
 type ListingStatus = "draft" | "active" | "archived";
 
@@ -148,7 +148,7 @@ function ListingRow({ listing }: { listing: AdminListing }) {
     try {
       await archive({ listingId: listing.id as never });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to archive.");
+      setError(cleanConvexError(err, "Failed to archive."));
     } finally {
       setPending(false);
     }
@@ -159,7 +159,7 @@ function ListingRow({ listing }: { listing: AdminListing }) {
     try {
       await unarchive({ listingId: listing.id as never });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to unarchive.");
+      setError(cleanConvexError(err, "Failed to unarchive."));
     } finally {
       setPending(false);
     }

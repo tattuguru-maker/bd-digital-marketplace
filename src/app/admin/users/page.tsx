@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/marketplace/breadcrumb";
 import { api } from "@/lib/convex/api";
-import { cn } from "@/lib/utils";
+import { cleanConvexError, cn } from "@/lib/utils";
 
 type Role = "buyer" | "seller" | "admin";
 
@@ -148,7 +148,7 @@ function UserRow({ user }: { user: AdminUser }) {
     try {
       await setRole({ userId: user.id as never, role: next });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update role.");
+      setError(cleanConvexError(err, "Failed to update role."));
     } finally {
       setPending(false);
     }
@@ -164,9 +164,7 @@ function UserRow({ user }: { user: AdminUser }) {
         status: next,
       });
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to update seller status.",
-      );
+      setError(cleanConvexError(err, "Failed to update seller status."));
     } finally {
       setPending(false);
     }

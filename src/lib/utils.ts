@@ -26,6 +26,20 @@ export function discountPercent(original: number, sale: number) {
   return Math.round(((original - sale) / original) * 100);
 }
 
+/**
+ * Convex server errors come wrapped in a noisy envelope like
+ *   "[CONVEX M(admin:setUserRole)] [Request ID: …] Server Error
+ *    Uncaught Error: <real message> at handler (…:line) Called by client"
+ * Strip that down to just the thrown message for display.
+ */
+export function cleanConvexError(err: unknown, fallback = "Something went wrong."): string {
+  const raw = err instanceof Error ? err.message : typeof err === "string" ? err : "";
+  if (!raw) return fallback;
+  const afterError = raw.split(/Uncaught Error:\s*/)[1] ?? raw;
+  const beforeHandler = afterError.split(/\s*at handler\s*/)[0] ?? afterError;
+  return beforeHandler.trim() || fallback;
+}
+
 export function timeAgo(iso: string) {
   const diff = Date.now() - new Date(iso).getTime();
   const minutes = Math.floor(diff / 60_000);

@@ -7,6 +7,7 @@ import { Loader2, Upload, X, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FormError, FormSuccess } from "@/components/auth/auth-fields";
 import { api } from "@/lib/convex/api";
+import { cleanConvexError } from "@/lib/utils";
 
 const ALLOWED_MIME = new Set(["image/jpeg", "image/png", "image/webp"]);
 const MAX_BYTES = 10 * 1024 * 1024;
@@ -119,7 +120,7 @@ export function ListingForm({
       }
       setImages((prev) => [...prev, ...uploaded]);
     } catch (err) {
-      setTopError(err instanceof Error ? err.message : "Image upload failed.");
+      setTopError(cleanConvexError(err, "Image upload failed."));
     } finally {
       setUploading(false);
     }
@@ -205,7 +206,7 @@ export function ListingForm({
         router.refresh();
       }
     } catch (err) {
-      setTopError(err instanceof Error ? err.message : "Could not save listing.");
+      setTopError(cleanConvexError(err, "Could not save listing."));
     } finally {
       setPending(false);
     }
